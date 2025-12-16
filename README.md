@@ -1,43 +1,103 @@
-# Interactive Black Hole Simulation
+<h1 align="center">🌌 BLACK HOLE SIMULATION </h1>
 
-**Host:** [https://black-h-sim1-web.vercel.app](https://black-h-sim1-web.vercel.app)
+<p align="center">
+  <strong>🚀 Experience the Edge of Spacetime 🚀</strong>
+</p>
 
-A realistic and interactive 3D simulation of a Black Hole, built with Three.js. Explore the physics of general relativity, gravitational lensing, and time dilation from the cockpit of a sci-fi spaceship.
+<p align="center">
+  <em>A scientifically-inspired, immersive 3D journey into the heart of a supermassive black hole.<br/>
+  Built with Three.js • Powered by real physics • Ready for your exploration.</em>
+</p>
 
-## Features
+<p align="center">
+  <a href="https://black-h-sim1-web.vercel.app">
+    <img src="https://img.shields.io/badge/🎮_PLAY_NOW-Launch_Simulation-blueviolet?style=for-the-badge&labelColor=1a1a2e" alt="Play Now"/>
+  </a>
+</p>
 
-*   **Realistic Visuals**:
-    *   **Gravitational Lensing**: Real-time raymarching shader distorting the background starfield.
-    *   **Volumetric Accretion Disk**: Glowing, swirling matter.
-    *   **Relativistic Jets**: Particle systems simulating high-energy ejections.
-*   **Interactive Physics**:
-    *   **Time Dilation**: See how time slows down as you approach the event horizon.
-    *   **Tidal Forces**: Visual and UI warnings for "Spaghettification".
-    *   **Redshift**: Visual warping and color shifting due to extreme gravity.
-*   **Spaceship Controls**:
-    *   Procedural 3D spaceship model with thruster effects.
-    *   1st Person (Cockpit) and 3rd Person (Orbit) camera modes.
+---
 
-## How to Play
+## 📸 Screenshots
 
-1.  **Launch**: Open the simulation and read the Mission Briefing.
-2.  **Controls**:
-    *   **W / A / S / D**: Move Forward, Left, Backward, Right.
-    *   **Space**: Ascend (Go Up).
-    *   **Shift**: Descend (Go Down).
-    *   **Mouse**: Aim the spaceship (Look around).
-    *   **ESC**: Release cursor control / Pause interaction.
-    *   **1 / 2 / 3**: Teleport to interesting locations (Safe Orbit, Accretion Disk, Jets).
-3.  **Mission**:
-    *   Experiment with the **Mass Slider** in the UI to see how the black hole grows and affects gravity.
-    *   Fly close to the Event Horizon (the black sphere) but don't fall in!
-    *   Switch views to see your ship warping under gravity.
+<table align="center">
+  <tr>
+    <td><img src="./images/screenshot-1.png" alt="Black Hole Simulation - Event Horizon View" height="300"/></td>
+    <td><img src="./images/screenshot-2.png" alt="Black Hole Simulation - Accretion Disk" height="300"/></td>
+  </tr>
+</table>
 
-## Development
+---
 
-*   **Tech Stack**: Three.js, Vite, Vanilla JS.
-*   **Run Locally**:
-    ```bash
-    npm install
-    npm start
-    ```
+## 🎯 Mission Briefing
+
+> **COMMANDER, YOUR MISSION AWAITS.**
+>
+> You have been selected for humanity's most daring expedition — a journey to the edge of a supermassive black hole designated **VOID-X1**. Your objective: study the effects of extreme gravity, gravitational lensing, and time dilation. Survive the mission. Return with data.
+>
+> *The Event Horizon awaits. Will you cross it?*
+
+---
+
+## ✨ Features
+
+### 🔬 **Realistic Physics Simulation**
+
+| Feature | Description |
+|---------|-------------|
+| ⚫ **Gravitational Lensing** | Real-time raymarching shaders distort light around the black hole |
+| 🌀 **Accretion Disk** | Volumetric, glowing matter swirling at relativistic speeds |
+| ⚡ **Relativistic Jets** | High-energy particle ejections from the poles |
+| ⏱️ **Time Dilation** | Experience how time slows as you approach the event horizon |
+| 🍝 **Spaghettification** | Visual and UI warnings as tidal forces intensify |
+| 🔴 **Gravitational Redshift** | Color shifting and visual warping near the singularity |
+
+### 🛸 **Spaceship Experience**
+
+| Feature | Description |
+|---------|-------------|
+| 🚀 **Procedural Ship** | Fully 3D-modeled spacecraft with thruster effects |
+| 👁️ **Dual Camera Modes** | Switch between cockpit (1st person) and orbit (3rd person) views |
+| 🎛️ **Interactive HUD** | Real-time physics data and proximity warnings |
+
+---
+
+## 🎮 Controls
+
+### ⌨️ Movement
+
+| Key | Action |
+|-----|--------|
+| `W` | 🔼 Thrust Forward |
+| `S` | 🔽 Thrust Backward |
+| `A` | ◀️ Strafe Left |
+| `D` | ▶️ Strafe Right |
+| `SPACE` | ⬆️ Ascend |
+| `SHIFT` | ⬇️ Descend |
+| `MOUSE` | 🎯 Aim / Look Around |
+
+### 🎯 Quick Actions
+
+| Key | Action |
+|-----|--------|
+| `1` | 🛰️ Teleport to **Safe Orbit** |
+| `2` | 🌀 Teleport to **Accretion Disk** |
+| `3` | ⚡ Teleport to **Relativistic Jets** |
+| `ESC` | ⏸️ Release Cursor / Pause |
+
+---
+
+## 🛠️ Run Locally
+
+```bash
+# Clone the repository
+git clone https://github.com/NITRR-Vivek/black_h_sim1_web.git
+
+# Navigate to project directory
+cd black_h_sim1_web
+
+# Install dependencies
+npm install
+
+# Launch development server
+npm start
+```
