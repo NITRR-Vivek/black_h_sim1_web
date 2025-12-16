@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Black Hole Simulation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js"
+        }
+      }
+    </script>
+</head>
+<body>
+    <div id="ui-container">
+        <div id="stats-panel">
+            <h2>Physics Status</h2>
+            <div class="stat-row"><span>Distance to Singularity:</span> <span id="dist-val">--</span> km</div>
+            <div class="stat-row"><span>Time Dilation (factor):</span> <span id="time-val">1.00</span>x</div>
+            <div class="stat-row"><span>Gravity (g):</span> <span id="grav-val">--</span> g</div>
+            <div class="stat-row" id="warning-row">Status: <span id="status-val">Safe</span></div>
+        </div>
+        
+        <div id="controls-panel">
+            <h2>Controls</h2>
+            <div class="control-group">
+                <label for="mass-slider">Black Hole Mass (Solar Masses)</label>
+                <input type="range" id="mass-slider" min="1" max="50" step="0.1" value="10">
+                <span id="mass-val">10</span> M☉
+            </div>
+            <div class="control-group">
+                <button id="view-toggle">Switch View (1st Person)</button>
+            </div>
+            <div class="instructions">
+                <p>WASD to Move | Space/Shift to Ascend/Descend</p>
+                <p>Mouse to Look</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="canvas-container"></div>
+
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>
