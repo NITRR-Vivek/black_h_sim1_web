@@ -81,6 +81,11 @@ window.addEventListener('keydown', (e) => {
         player.position.set(0.1, 0, 0.1); // Inside BH
         player.velocity.set(0,0,0);
     }
+    if (e.key === '5') { // Extreme Gravity
+        const Rs = physics.calculateSchwarzschildRadius(blackHole.mass);
+        player.position.set(0, 0, Rs * 1.2); 
+        player.velocity.set(0,0,0);
+    }
 });
 
 // UI Logic

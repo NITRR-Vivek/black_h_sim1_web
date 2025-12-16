@@ -35,7 +35,7 @@ export class Player {
         
         // Sci-Fi Spaceship
         const hullMat = new THREE.MeshStandardMaterial({ 
-            color: 0x88ccff, 
+            color: 0x888888, // Pure Grey
             roughness: 0.3, 
             metalness: 0.8 
         });
@@ -100,11 +100,11 @@ export class Player {
         });
         
         const panelL = new THREE.Mesh(panelGeo, panelMat);
-        panelL.position.set(-3.5, 0, 0.5); // Extend from left wing
+        panelL.position.set(-2.0, 0, 0.5); // Closer to fuselage
         this.meshGroup.add(panelL);
 
         const panelR = new THREE.Mesh(panelGeo, panelMat);
-        panelR.position.set(3.5, 0, 0.5); // Extend from right wing
+        panelR.position.set(2.0, 0, 0.5); // Closer to fuselage
         this.meshGroup.add(panelR);
 
 

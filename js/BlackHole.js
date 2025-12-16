@@ -6,7 +6,7 @@ export class BlackHole {
     constructor(scene, camera) {
         this.scene = scene;
         this.camera = camera;
-        this.mass = 10; // Solar masses
+        this.mass = 5; // Reduced initial mass
         this.rs = 0; 
         
         this.meshGroup = new THREE.Group();
@@ -117,9 +117,11 @@ export class BlackHole {
         
         for (let i = 1; i < positions.length; i+=3) {
             positions[i] += dt * jetSpeed;
-            if (positions[i] > jetHeight + Math.random() * (jetHeight * 0.5)) {
+            // Continuous stream check: if too high OR unitialized (0)
+            if (positions[i] > jetHeight + Math.random() * (jetHeight * 0.5) || positions[i] == 0) {
                 // Reset near accretion disk inner edge/surface
-                positions[i] = this.rs * 0.8; 
+                // Randomize Y slightly to avoid "pulsing" waves
+                positions[i] = this.rs * 0.8 + Math.random() * this.rs; 
                 
                 // Reset X/Z width based on Rs
                 positions[i-1] = (Math.random()-0.5) * this.rs * 0.4; 
