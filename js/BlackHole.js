@@ -89,7 +89,7 @@ export class BlackHole {
     
     update(dt) {
         this.uniforms.time.value += dt;
-        this.diskUniforms.time.value += dt;
+        // this.diskUniforms removed as disk is now in main shader
         this.uniforms.mass.value = this.mass;
         
         this.uniforms.cameraPos.value.copy(this.camera.position);

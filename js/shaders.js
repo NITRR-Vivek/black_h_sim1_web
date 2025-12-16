@@ -170,14 +170,6 @@ void main() {
         color += vec3(0.6, 0.8, 1.0) * glow * 0.05;
     }
     
-    if (hit) {
-        color = vec3(0.0); // Black hole center
-    } else {
-        color += getBackground(rayDir);
-        // Add Photon Ring Glow
-        color += vec3(0.6, 0.8, 1.0) * glow * 0.05;
-    }
-    
     // Tone mapping
     color = color / (color + vec3(1.0));
     
