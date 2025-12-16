@@ -72,10 +72,11 @@ vec3 getGalaxy(vec3 dir, vec3 center, vec3 color, float size, float rot) {
 // Interstellar Background
 vec3 getBackground(vec3 dir) {
     // 1. Rich Starfield with Distinct Colors (RGB)
-    float n = noise(dir * 350.0);
+    // Increased density and variety
+    float n = noise(dir * 450.0); 
     vec3 stars = vec3(0.0);
-    if (n > 0.99) { 
-        float brightness = pow((n - 0.99) / 0.01, 20.0);
+    if (n > 0.98) {  // Lower threshold = more stars
+        float brightness = pow((n - 0.98) / 0.02, 10.0);
         // Discrete color selection based on noise
         float type = noise(dir * 50.0);
         vec3 starColor;
@@ -141,7 +142,8 @@ void main() {
         float r = length(rayPos);
         
         // Event Horizon Check
-        if(r < Rs) {
+        // Make visual horizon broader to mask "inside" stars and simulate Shadow
+        if(r < Rs * 1.5) { 
             hit = true;
             break;
         }

@@ -97,6 +97,11 @@ window.addEventListener('keydown', (e) => {
         player.position.set(0, 0, Rs * 1.2); 
         player.velocity.set(0,0,0);
     }
+    if (e.key === '6') { // Far
+        player.position.set(0, 20, 600); 
+        player.velocity.set(0,0,0);
+        player.rotation.set(0,0,0);
+    }
 });
 
 // UI Logic
