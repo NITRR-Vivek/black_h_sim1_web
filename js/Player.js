@@ -7,7 +7,7 @@ export class Player {
         this.domElement = domElement;
         
         // State
-        this.position = new THREE.Vector3(0, 0, 50);
+        this.position = new THREE.Vector3(0, 0, 120);
         this.rotation = new THREE.Euler(0, 0, 0, 'YXZ');
         this.isFirstPerson = false;
         
