@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { BlackHole } from './BlackHole.js';
 import { Player } from './Player.js';
 import { PhysicsEngine } from './Physics.js';
-import { CelestialBody } from './CelestialBody.js';
 
 // Setup
 const scene = new THREE.Scene();
@@ -21,10 +20,6 @@ scene.add(ambientLight);
 const blackHole = new BlackHole(scene, camera);
 const player = new Player(scene, camera, renderer.domElement);
 const physics = new PhysicsEngine();
-
-// Celestial Bodies
-const planet1 = new CelestialBody(scene, 'gas', 200, 0.2, 10, 0xffaa44);
-const planet2 = new CelestialBody(scene, 'rocky', 120, 0.5, 3, 0x4488ff);
 
 // UI Elements
 const ui = {
@@ -82,6 +77,10 @@ window.addEventListener('keydown', (e) => {
         player.position.set(5, 50, 5);
         player.rotation.x = -Math.PI/2;
     }
+    if (e.key === '4') { // Singularity
+        player.position.set(0.1, 0, 0.1); // Inside BH
+        player.velocity.set(0,0,0);
+    }
 });
 
 // UI Logic
@@ -106,8 +105,6 @@ function animate(time) {
 
     player.update(dt);
     blackHole.update(dt);
-    planet1.update(dt, new THREE.Vector3(0,0,0));
-    planet2.update(dt, new THREE.Vector3(0,0,0));
     
     // Physics Updates
     const r = player.position.length();

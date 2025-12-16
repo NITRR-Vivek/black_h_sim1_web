@@ -87,9 +87,9 @@ vec3 getBackground(vec3 dir) {
 vec3 sampleDisk(vec3 pos) {
     float dist = length(pos);
     float Rs = 2.0 * mass;
-    if (dist < 1.5 * Rs || dist > 6.0 * Rs) return vec3(0.0);
+    if (dist < 1.5 * Rs || dist > 9.0 * Rs) return vec3(0.0); // Increased max size
     
-    float radialFade = smoothstep(1.5*Rs, 2.5*Rs, dist) * (1.0 - smoothstep(4.0*Rs, 6.0*Rs, dist));
+    float radialFade = smoothstep(1.5*Rs, 2.5*Rs, dist) * (1.0 - smoothstep(6.0*Rs, 9.0*Rs, dist)); // Wider fade
     
     // Rotate noise
     float angle = atan(pos.z, pos.x);
