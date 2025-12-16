@@ -43,44 +43,72 @@ float noise(vec3 x) {
                    mix( hash(n + dot(step, vec3(0, 1, 1))), hash(n + dot(step, vec3(1, 1, 1))), u.x), u.y), u.z);
 }
 
-// Milky Way / Galaxy Background
+// Procedural Galaxy Generator
+vec3 getGalaxy(vec3 dir, vec3 center, vec3 color, float size, float rot) {
+    // Project dir onto a plane facing 'center' is hard in raymarching without basis.
+    // Simpler: Just check angle between dir and center.
+    float angle = acos(dot(dir, normalize(center)));
+    if (angle > size) return vec3(0.0);
+    
+    // Local coords in the "galaxy patch"
+    // Use cross products to establish a local basis for spiral arms
+    vec3 up = vec3(0,1,0);
+    vec3 right = normalize(cross(center, up));
+    vec3 localUp = normalize(cross(right, center));
+    
+    float x = dot(dir, right) * (1.0/size);
+    float y = dot(dir, localUp) * (1.0/size);
+    float r = sqrt(x*x + y*y);
+    float theta = atan(y, x) + rot;
+    
+    // Spiral Arms
+    float arms = cos(theta * 2.0 + r * 10.0);
+    float core = exp(-r * 4.0);
+    float disk = smoothstep(1.0, 0.2, r);
+    
+    return color * (core + disk * (0.5 + 0.5 * arms)) * 2.0;
+}
+
+// Interstellar Background
 vec3 getBackground(vec3 dir) {
-    // 1. Basic Starfield
-    float n = noise(dir * 200.0);
+    // 1. Rich Starfield with Color Temperature
+    // High freq noise for stars
+    float n = noise(dir * 300.0);
     vec3 stars = vec3(0.0);
-    if (n > 0.99) {
-        float brightness = pow((n - 0.99) / 0.01, 20.0);
-        stars = vec3(brightness);
+    if (n > 0.992) { // Fewer but brighter stars
+        float brightness = pow((n - 0.992) / 0.008, 15.0);
+        // Random star color based on position
+        float colorRand = noise(dir * 10.0);
+        vec3 starColor = mix(vec3(0.5, 0.5, 1.0), vec3(1.0, 0.8, 0.5), colorRand); // Blue to Red/Yellow
+        stars = starColor * brightness;
     }
 
-    // 2. Galactic Plane (Milky Way Band)
-    // We assume the galaxy is roughly aligned with the X-Z plane or slightly tilted
-    // Let's tilt it for visual interest (dir.y + dir.x * 0.5)
-    float latitude = dir.y * 2.0 + sin(dir.x); 
+    // 2. Milky Way Band (The "Backbone")
+    float latitude = dir.y * 2.0 + sin(dir.x * 0.5) * 0.5; 
     float distFromPlane = abs(latitude);
+    float galaxyCore = exp(-distFromPlane * 3.0);
     
-    // Core glow (dense stars)
-    float galaxyCore = exp(-distFromPlane * 2.0);
+    float cloudNoise = noise(dir * 3.0 + vec3(time * 0.01));
+    vec3 milkyWay = mix(vec3(0.1, 0.0, 0.2), vec3(1.0, 0.8, 0.6), galaxyCore);
+    milkyWay *= (galaxyCore + cloudNoise * 0.3);
+    milkyWay *= smoothstep(1.0, 0.0, distFromPlane);
     
-    // Nebula Clouds (Noise)
-    float cloudNoise = noise(dir * 4.0 + vec3(0.0, time * 0.05, 0.0));
-    float detailNoise = noise(dir * 10.0);
-    
-    // Mix Colors: Core is yellow/white, Edges are purple/blue
-    vec3 coreColor = vec3(1.0, 0.9, 0.7);
-    vec3 outerColor = vec3(0.3, 0.1, 0.5);
-    
-    vec3 galaxy = mix(outerColor, coreColor, galaxyCore);
-    galaxy *= (galaxyCore * 1.5 + cloudNoise * 0.5);
-    galaxy *= smoothstep(1.5, 0.0, distFromPlane); // Fade out away from plane
-    
-    // Dust lanes (dark patches)
-    float dust = noise(dir * 8.0 + 100.0);
-    if (distFromPlane < 0.5) {
-        galaxy *= smoothstep(0.3, 0.6, dust);
-    }
+    // Dust lanes
+    float dust = noise(dir * 10.0 + 50.0);
+    if (distFromPlane < 0.3) milkyWay *= smoothstep(0.4, 0.7, dust);
 
-    return stars + galaxy * 0.5;
+    // 3. Other Galaxies (Andromeda-like)
+    vec3 galaxy1 = getGalaxy(dir, vec3(0.5, 0.5, 0.5), vec3(0.8, 0.8, 1.0), 0.2, 1.0);
+    vec3 galaxy2 = getGalaxy(dir, vec3(-0.7, -0.2, 0.1), vec3(1.0, 0.6, 0.6), 0.15, 2.0);
+    vec3 galaxy3 = getGalaxy(dir, vec3(0.1, -0.8, -0.3), vec3(0.6, 1.0, 0.8), 0.1, 0.0);
+
+    // 4. Colorful Nebulae (Interstellar Clouds)
+    float nebulaN = noise(dir * 2.0);
+    vec3 nebula = vec3(0.0);
+    nebula += vec3(0.2, 0.0, 0.3) * smoothstep(0.4, 0.8, nebulaN); // Purple
+    nebula += vec3(0.0, 0.1, 0.2) * smoothstep(0.3, 0.7, noise(dir * 2.5 + 10.0)); // Teal
+
+    return stars + milkyWay * 0.6 + galaxy1 + galaxy2 + galaxy3 + nebula * 0.3;
 }
 
 // Accretion Disk Sample (2D on Plane)
