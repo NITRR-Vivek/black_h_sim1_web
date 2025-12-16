@@ -56,25 +56,9 @@ export class BlackHole {
         this.occluder.scale.setScalar(this.rs);
         this.meshGroup.add(this.occluder);
 
-        // 3. Volumetric Accretion Disk
-        const diskGeo = new THREE.PlaneGeometry(1, 1, 64, 64);
-        this.diskUniforms = {
-            time: { value: 0 },
-            colorInner: { value: new THREE.Color(0xffaa00) },
-            colorOuter: { value: new THREE.Color(0xcc3300) }
-        };
-        const diskMat = new THREE.ShaderMaterial({
-            vertexShader: diskVertexShader,
-            fragmentShader: diskFragmentShader,
-            uniforms: this.diskUniforms,
-            side: THREE.DoubleSide,
-            transparent: true,
-            depthWrite: false, // Glow effect
-            blending: THREE.AdditiveBlending
-        });
-        this.accretionDisk = new THREE.Mesh(diskGeo, diskMat);
-        this.accretionDisk.rotation.x = -Math.PI / 2;
-        this.meshGroup.add(this.accretionDisk);
+        // 3. Accretion Disk (Handled by Raymarching Shader)
+        // We removed the separate mesh because the main shader now renders the warped disk.
+        // We can keep a dummy object if needed for logic, but visuals are pure shader now.
 
         // 4. Relativistic Jets
         const jetParticles = 1000;
@@ -125,11 +109,6 @@ export class BlackHole {
         this.updateProperties();
         this.occluder.scale.setScalar(this.rs);
 
-        // Update Disk Size
-        // Disk should span from ~1.5 Rs to 4-5 Rs
-        const diskScale = this.rs * 6.0;
-        this.accretionDisk.scale.set(diskScale, diskScale, 1);
-        
         // Update Jets (Fake particle animation)
         // Jets should scale with Rs.
         const positions = this.jets.geometry.attributes.position.array;

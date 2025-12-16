@@ -83,29 +83,24 @@ vec3 getBackground(vec3 dir) {
     return stars + galaxy * 0.5;
 }
 
-// Accretion Disk (Procedural)
-vec3 getAccretionDisk(vec3 pos) {
+// Accretion Disk Sample (2D on Plane)
+vec3 sampleDisk(vec3 pos) {
     float dist = length(pos);
-    if (dist < 2.0 * mass || dist > 6.0 * mass) return vec3(0.0);
+    float Rs = 2.0 * mass;
+    if (dist < 1.5 * Rs || dist > 6.0 * Rs) return vec3(0.0);
     
-    // Disk is in XZ plane (y approx 0)
-    // Simple integration approximation
-    
-    float thickness = 0.1 * mass;
-    if (abs(pos.y) > thickness) return vec3(0.0);
-    
-    float radialFade = smoothstep(2.0*mass, 3.0*mass, dist) * (1.0 - smoothstep(4.0*mass, 6.0*mass, dist));
+    float radialFade = smoothstep(1.5*Rs, 2.5*Rs, dist) * (1.0 - smoothstep(4.0*Rs, 6.0*Rs, dist));
     
     // Rotate noise
     float angle = atan(pos.z, pos.x);
-    float spiral = noise(vec3(pos.x * 0.5, pos.z * 0.5, time * 0.5));
+    float spiral = noise(vec3(pos.x * 0.3, pos.z * 0.3, time * 0.8));
     
-    vec3 diskColor = vec3(1.0, 0.6, 0.2) * radialFade * (0.5 + 0.5 * spiral);
-    // Doppler beaming approximation (make one side brighter)
-    // Assuming rotation around Y, moving 'left' is brighter?
-    float doppler = 1.0 + 0.5 * sin(angle);
+    vec3 diskColor = vec3(1.0, 0.7, 0.3) * radialFade * (0.6 + 0.4 * spiral);
     
-    return diskColor * doppler * 2.0;
+    // Doppler beaming: moving left (sin > 0) is brighter
+    float doppler = 1.0 + 0.6 * sin(angle);
+    
+    return diskColor * doppler * 2.5; // High intensity
 }
 
 void main() {
@@ -115,14 +110,14 @@ void main() {
     
     vec3 color = vec3(0.0);
     float glow = 0.0;
+    vec3 diskAccum = vec3(0.0);
     
     // Raymarching
-    // Schwarzschild Radius Rs = 2 * G * mass / c^2.
     float Rs = 2.0 * mass; 
-    
     bool hit = false;
     
     for(int i = 0; i < MAX_STEPS; i++) {
+        vec3 prevPos = rayPos;
         float r = length(rayPos);
         
         // Event Horizon Check
@@ -131,28 +126,48 @@ void main() {
             break;
         }
         
-        // Accumulate Accretion Disk (Volumetric-ish)
-        if (abs(rayPos.y) < 0.5 && r > Rs * 1.5 && r < Rs * 5.0) {
-             color += getAccretionDisk(rayPos) * 0.1;
-        }
-        
-        // Gravity Bending (Fake Force)
+        // Gravity Bending (Visual approximation)
         vec3 toCenter = normalize(-rayPos);
-        float step = max(0.1, r * 0.1); 
+        float step = max(0.1, r * 0.15); // Slightly bigger steps for speed
         vec3 force = toCenter * (Rs / (r * r)); 
         
-        rayDir += force * step * 2.0; // Artificial bending factor
+        rayDir += force * step * 2.5; // Stronger bending for visual effect
         rayDir = normalize(rayDir);
         
         rayPos += rayDir * step;
         
-        // Accumulate Glow for Photon Ring
-        // If we are very close to Rs (e.g., 1.0 < r/Rs < 1.5) and stepping through, accumulate light
+        // --- Accretion Disk Intersection (Plane Y=0) ---
+        // If we crossed the Y plane in this step
+        if (rayPos.y * prevPos.y < 0.0) {
+            // Linear interpolation to find intersection point
+            float t = prevPos.y / (prevPos.y - rayPos.y);
+            vec3 hitPos = mix(prevPos, rayPos, t);
+            
+            // Sample disk at this exact 3D point
+            vec3 diskSample = sampleDisk(hitPos);
+            
+            // Accumulate (simple transparency)
+            diskAccum += diskSample;
+        }
+        
+        // Photon Ring Glow
         if (r > Rs && r < Rs * 1.5) {
-             glow += 0.1 / (abs(r - Rs) + 0.1); 
+             glow += 0.2 / (abs(r - Rs) + 0.1); 
         }
         
         if (r > 1000.0) break; // Escaped
+    }
+    
+    if (hit) {
+        color = vec3(0.0); // Black hole center
+    } else {
+        // Background + Disk
+        // If disk accumulated color, blend it on top of stars
+        vec3 bg = getBackground(rayDir);
+        color = bg + diskAccum;
+        
+        // Add Photon Ring Glow
+        color += vec3(0.6, 0.8, 1.0) * glow * 0.05;
     }
     
     if (hit) {
