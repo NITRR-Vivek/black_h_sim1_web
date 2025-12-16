@@ -33,55 +33,71 @@ export class Player {
         this.meshGroup = new THREE.Group();
         this.scene.add(this.meshGroup);
         
-        // Simple Astronaut: White suit
-        const material = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.6 });
-        const darkMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8 });
-        
-        // Body
-        const bodyGeo = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 12);
-        const body = new THREE.Mesh(bodyGeo, material);
-        body.position.y = 0.75;
+        // Sci-Fi Spaceship
+        const hullMat = new THREE.MeshStandardMaterial({ 
+            color: 0x88ccff, 
+            roughness: 0.3, 
+            metalness: 0.8 
+        });
+        const darkMat = new THREE.MeshStandardMaterial({ 
+            color: 0x222222, 
+            roughness: 0.7 
+        });
+        const glowMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+
+        // Fuselage (Cone + Cylinder)
+        const noseGeo = new THREE.ConeGeometry(0.5, 2.0, 8);
+        const nose = new THREE.Mesh(noseGeo, hullMat);
+        nose.rotation.x = -Math.PI / 2;
+        nose.position.z = -1.0;
+        this.meshGroup.add(nose);
+
+        const bodyGeo = new THREE.CylinderGeometry(0.5, 0.7, 2.0, 8);
+        const body = new THREE.Mesh(bodyGeo, hullMat);
+        body.rotation.x = -Math.PI / 2;
+        body.position.z = 1.0;
         this.meshGroup.add(body);
         
-        // Legs
-        const legGeo = new THREE.CylinderGeometry(0.2, 0.2, 1.2, 12);
-        const legL = new THREE.Mesh(legGeo, material);
-        legL.position.set(-0.3, 0, 0);
-        this.meshGroup.add(legL);
-        const legR = new THREE.Mesh(legGeo, material);
-        legR.position.set(0.3, 0, 0);
-        this.meshGroup.add(legR);
-        
-        // Arms
-        const armGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.0, 12);
-        const armL = new THREE.Mesh(armGeo, material);
-        armL.position.set(-0.7, 1.0, 0);
-        armL.rotation.z = 0.5;
-        this.meshGroup.add(armL);
-        const armR = new THREE.Mesh(armGeo, material);
-        armR.position.set(0.7, 1.0, 0);
-        armR.rotation.z = -0.5;
-        this.meshGroup.add(armR);
-        
-        // Head
-        const headGeo = new THREE.SphereGeometry(0.4, 16, 16);
-        const head = new THREE.Mesh(headGeo, material);
-        head.position.y = 1.7;
-        this.meshGroup.add(head);
-        
-        // Visor
-        const visorGeo = new THREE.SphereGeometry(0.25, 16, 16, 0, Math.PI * 2, 0, Math.PI/2.5);
-        const visorMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.2 });
-        const visor = new THREE.Mesh(visorGeo, visorMat);
-        visor.rotation.x = -Math.PI / 2;
-        visor.position.set(0, 1.7, 0.25);
-        this.meshGroup.add(visor);
-        
-        // Backpack
-        const packGeo = new THREE.BoxGeometry(0.8, 1.0, 0.4);
-        const pack = new THREE.Mesh(packGeo, material);
-        pack.position.set(0, 1.0, -0.4);
-        this.meshGroup.add(pack);
+        // Cockpit
+        const cockpitGeo = new THREE.BoxGeometry(0.6, 0.4, 1.0);
+        const cockpit = new THREE.Mesh(cockpitGeo, new THREE.MeshStandardMaterial({
+            color: 0x111111, roughness: 0.1, metalness: 0.9
+        }));
+        cockpit.position.set(0, 0.4, 0.5);
+        this.meshGroup.add(cockpit);
+
+        // Wings
+        const wingGeo = new THREE.BufferGeometry();
+        const wingVertices = new Float32Array([
+            0, 0, 0,   2.5, 0, 1.5,   0, 0, 2.0, // Left Wing
+            0, 0, 0,   -2.5, 0, 1.5,  0, 0, 2.0  // Right Wing
+        ]);
+        wingGeo.setAttribute('position', new THREE.BufferAttribute(wingVertices, 3));
+        const wings = new THREE.Mesh(wingGeo, hullMat);
+        wings.position.set(0, 0, 0.5);
+        this.meshGroup.add(wings);
+
+        // Engine
+        const engineGeo = new THREE.CylinderGeometry(0.6, 0.4, 0.5, 12);
+        const engine = new THREE.Mesh(engineGeo, darkMat);
+        engine.rotation.x = -Math.PI / 2;
+        engine.position.z = 2.25;
+        this.meshGroup.add(engine);
+
+        // Thruster Glow (The Jet)
+        const jetGeo = new THREE.ConeGeometry(0.3, 3.0, 8, 1, true);
+        const jetMat = new THREE.MeshBasicMaterial({ 
+            color: 0x00ffff, 
+            transparent: true, 
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        this.thruster = new THREE.Mesh(jetGeo, jetMat);
+        this.thruster.rotation.x = Math.PI / 2; // Point back
+        this.thruster.position.z = 3.5;
+        this.thruster.scale.set(0, 0, 0); // Start off
+        this.meshGroup.add(this.thruster);
         
         this.meshGroup.position.copy(this.position);
     }
@@ -138,21 +154,29 @@ export class Player {
         
         // Rotate body to face camera yaw
         this.meshGroup.rotation.y = this.rotation.y;
+        
+        // Thruster Logic
+        if (this.keys.forward) {
+            // Flicker effect
+            const flicker = 0.8 + Math.random() * 0.4;
+            this.thruster.scale.set(flicker, flicker, flicker);
+        } else {
+            this.thruster.scale.lerp(new THREE.Vector3(0,0,0), 0.2);
+        }
 
         // Camera Logic
         if (this.isFirstPerson) {
-            // Camera inside head
-            this.camera.position.copy(this.position).add(new THREE.Vector3(0, 1.7, 0)); 
+            // Camera inside Cockpit
+            this.camera.position.copy(this.position).add(new THREE.Vector3(0, 0.6, 0)); 
             this.camera.rotation.copy(this.rotation);
-            this.meshGroup.visible = false; 
+            this.meshGroup.visible = false; // Hide ship in 1st person
         } else {
             // 3rd Person Orbit
-            const camOffset = new THREE.Vector3(0, 2, 8); 
+            const camOffset = new THREE.Vector3(0, 3, 10); 
             camOffset.applyEuler(new THREE.Euler(this.rotation.x * 0.5, this.rotation.y, 0)); 
-            // We rotate offset by Y, and slightly by X to look up/down
             
             this.camera.position.copy(this.position).add(camOffset);
-            this.camera.lookAt(this.position.clone().add(new THREE.Vector3(0, 1, 0)));
+            this.camera.lookAt(this.position.clone()); // Look at ship center
             this.meshGroup.visible = true;
         }
     }

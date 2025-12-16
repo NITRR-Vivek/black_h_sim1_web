@@ -40,6 +40,11 @@ const ui = {
 };
 
 // UI Logic
+// Show info modal on start
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('info-modal').style.display = 'flex';
+});
+
 if(ui.infoBtn) {
     ui.infoBtn.addEventListener('click', () => {
         document.getElementById('info-modal').style.display = 'flex';
@@ -47,6 +52,8 @@ if(ui.infoBtn) {
 }
 document.getElementById('close-modal')?.addEventListener('click', () => {
     document.getElementById('info-modal').style.display = 'none';
+    // Optional: Request pointer lock on start
+    document.body.requestPointerLock();
 });
 
 // Teleports
