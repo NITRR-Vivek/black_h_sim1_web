@@ -14,7 +14,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 0; /* Background layer */
+    z-index: -1; /* Background layer */
 }
 
 #ui-container {
