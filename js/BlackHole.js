@@ -131,13 +131,19 @@ export class BlackHole {
         this.accretionDisk.scale.set(diskScale, diskScale, 1);
         
         // Update Jets (Fake particle animation)
+        // Jets should scale with Rs.
         const positions = this.jets.geometry.attributes.position.array;
+        const jetHeight = this.rs * 10.0; // Proportional height
+        const jetSpeed = this.rs * 2.0;   // Speed proportional to size
+        
         for (let i = 1; i < positions.length; i+=3) {
-            positions[i] += dt * 20.0;
-            if (positions[i] > 50 + Math.random()*20) {
-                positions[i] = this.rs; // Reset to near BH
-                positions[i-1] = (Math.random()-0.5) * this.rs * 0.2; // reset X
-                positions[i+1] = (Math.random()-0.5) * this.rs * 0.2; // reset Z
+            positions[i] += dt * jetSpeed;
+            if (positions[i] > jetHeight + Math.random() * (jetHeight * 0.5)) {
+                // Reset to near BH (Rs)
+                positions[i] = this.rs * (1.0 + Math.random() * 0.2); 
+                // Reset X/Z width based on Rs
+                positions[i-1] = (Math.random()-0.5) * this.rs * 0.3; 
+                positions[i+1] = (Math.random()-0.5) * this.rs * 0.3; 
             }
         }
         this.jets.geometry.attributes.position.needsUpdate = true;

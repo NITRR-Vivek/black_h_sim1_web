@@ -20,6 +20,9 @@
 
         <!-- Info Button -->
         <button id="info-btn">i</button>
+        
+        <!-- Theory Button -->
+        <button id="theory-btn">?</button>
 
         <!-- Info Modal -->
         <div id="info-modal">
@@ -53,6 +56,34 @@
             <div class="stat-row"><span>Time Dilation (factor):</span> <span id="time-val">1.00</span>x</div>
             <div class="stat-row"><span>Gravity (g):</span> <span id="grav-val">--</span> g</div>
             <div class="stat-row" id="warning-row">Status: <span id="status-val">Safe</span></div>
+        </div>
+
+        <!-- Theory Modal -->
+        <div id="theory-modal">
+            <div class="modal-content">
+                <h2>Black Hole Physics & Equations</h2>
+                
+                <div class="theory-section">
+                    <h3>1. Schwarzschild Radius (Event Horizon)</h3>
+                    <p>The radius of no return.</p>
+                    <div class="equation">Rs = 2GM / c²</div>
+                    <p>Where <em>G</em> is gravity constant, <em>M</em> is mass, <em>c</em> is speed of light.</p>
+                </div>
+
+                <div class="theory-section">
+                    <h3>2. Time Dilation</h3>
+                    <p>Time slows down near the black hole.</p>
+                    <div class="equation">t' = t / √(1 - Rs/r)</div>
+                    <p>At <em>r = Rs</em>, time stops relative to outside observer.</p>
+                </div>
+
+                <div class="theory-section">
+                    <h3>3. Gravitational Lensing</h3>
+                    <p>Light bends around massive objects, creating rings and distortions (Einstein Ring).</p>
+                </div>
+                
+                <button id="close-theory">Close Data Log</button>
+            </div>
         </div>
         
         <div id="controls-panel">

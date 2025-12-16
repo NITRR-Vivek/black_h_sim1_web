@@ -77,15 +77,39 @@ export class Player {
         wings.position.set(0, 0, 0.5);
         this.meshGroup.add(wings);
 
-        // Engine
-        const engineGeo = new THREE.CylinderGeometry(0.6, 0.4, 0.5, 12);
-        const engine = new THREE.Mesh(engineGeo, darkMat);
-        engine.rotation.x = -Math.PI / 2;
-        engine.position.z = 2.25;
-        this.meshGroup.add(engine);
+        // Double Engines
+        const engineGeo = new THREE.CylinderGeometry(0.3, 0.2, 0.5, 12);
+        
+        const engineL = new THREE.Mesh(engineGeo, darkMat);
+        engineL.rotation.x = -Math.PI / 2;
+        engineL.position.set(-0.6, 0, 2.25);
+        this.meshGroup.add(engineL);
 
-        // Thruster Glow (The Jet)
-        const jetGeo = new THREE.ConeGeometry(0.3, 3.0, 8, 1, true);
+        const engineR = new THREE.Mesh(engineGeo, darkMat);
+        engineR.rotation.x = -Math.PI / 2;
+        engineR.position.set(0.6, 0, 2.25);
+        this.meshGroup.add(engineR);
+
+        // Solar Wings (Panels)
+        const panelGeo = new THREE.BoxGeometry(2.0, 0.05, 0.8);
+        const panelMat = new THREE.MeshStandardMaterial({ 
+            color: 0x111144, 
+            roughness: 0.2, 
+            metalness: 0.6,
+            emissive: 0x000022
+        });
+        
+        const panelL = new THREE.Mesh(panelGeo, panelMat);
+        panelL.position.set(-3.5, 0, 0.5); // Extend from left wing
+        this.meshGroup.add(panelL);
+
+        const panelR = new THREE.Mesh(panelGeo, panelMat);
+        panelR.position.set(3.5, 0, 0.5); // Extend from right wing
+        this.meshGroup.add(panelR);
+
+
+        // Double Thruster Glows
+        const jetGeo = new THREE.ConeGeometry(0.2, 2.5, 8, 1, true);
         const jetMat = new THREE.MeshBasicMaterial({ 
             color: 0x00ffff, 
             transparent: true, 
@@ -93,11 +117,20 @@ export class Player {
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
-        this.thruster = new THREE.Mesh(jetGeo, jetMat);
-        this.thruster.rotation.x = Math.PI / 2; // Point back
-        this.thruster.position.z = 3.5;
-        this.thruster.scale.set(0, 0, 0); // Start off
-        this.meshGroup.add(this.thruster);
+        
+        this.thrusterL = new THREE.Mesh(jetGeo, jetMat);
+        this.thrusterL.rotation.x = Math.PI / 2; 
+        this.thrusterL.position.set(-0.6, 0, 3.5);
+        this.meshGroup.add(this.thrusterL);
+
+        this.thrusterR = new THREE.Mesh(jetGeo, jetMat);
+        this.thrusterR.rotation.x = Math.PI / 2; 
+        this.thrusterR.position.set(0.6, 0, 3.5);
+        this.meshGroup.add(this.thrusterR);
+        
+        // Initialize scales
+        this.thrusterL.scale.set(0,0,0);
+        this.thrusterR.scale.set(0,0,0);
         
         this.meshGroup.position.copy(this.position);
     }
@@ -155,13 +188,17 @@ export class Player {
         // Rotate body to face camera yaw
         this.meshGroup.rotation.y = this.rotation.y;
         
-        // Thruster Logic
+        // Thruster Logic (Double)
         if (this.keys.forward) {
             // Flicker effect
             const flicker = 0.8 + Math.random() * 0.4;
-            this.thruster.scale.set(flicker, flicker, flicker);
+            const vFlicker = new THREE.Vector3(flicker, flicker, flicker);
+            this.thrusterL.scale.copy(vFlicker);
+            this.thrusterR.scale.copy(vFlicker);
         } else {
-            this.thruster.scale.lerp(new THREE.Vector3(0,0,0), 0.2);
+            const vZero = new THREE.Vector3(0,0,0);
+            this.thrusterL.scale.lerp(vZero, 0.2);
+            this.thrusterR.scale.lerp(vZero, 0.2);
         }
 
         // Camera Logic

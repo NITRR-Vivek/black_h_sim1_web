@@ -36,7 +36,8 @@ const ui = {
     massVal: document.getElementById('mass-val'),
     viewBtn: document.getElementById('view-toggle'),
     overlay: document.getElementById('alert-overlay'),
-    infoBtn: document.getElementById('info-btn')
+    infoBtn: document.getElementById('info-btn'),
+    theoryBtn: document.getElementById('theory-btn')
 };
 
 // UI Logic
@@ -54,6 +55,16 @@ document.getElementById('close-modal')?.addEventListener('click', () => {
     document.getElementById('info-modal').style.display = 'none';
     // Optional: Request pointer lock on start
     document.body.requestPointerLock();
+});
+
+// Theory Modal Logic
+if(ui.theoryBtn) {
+    ui.theoryBtn.addEventListener('click', () => {
+        document.getElementById('theory-modal').style.display = 'flex';
+    });
+}
+document.getElementById('close-theory')?.addEventListener('click', () => {
+    document.getElementById('theory-modal').style.display = 'none';
 });
 
 // Teleports
@@ -76,7 +87,7 @@ window.addEventListener('keydown', (e) => {
 // UI Logic
 ui.viewBtn.addEventListener('click', () => {
     player.toggleView();
-    ui.viewBtn.innerText = player.isFirstPerson ? "Switch View (3rd Person)" : "Switch View (1st Person)";
+    ui.viewBtn.innerText = player.isFirstPerson ? "SWITCH VIEW (3RD PERSON)" : "SWITCH VIEW (1ST PERSON)";
 });
 
 ui.massSlider.addEventListener('input', (e) => {
