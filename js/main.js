@@ -32,7 +32,8 @@ const ui = {
     viewBtn: document.getElementById('view-toggle'),
     overlay: document.getElementById('alert-overlay'),
     infoBtn: document.getElementById('info-btn'),
-    theoryBtn: document.getElementById('theory-btn')
+    theoryBtn: document.getElementById('theory-btn'),
+    devBtn: document.getElementById('dev-btn')
 };
 
 // UI Logic
@@ -60,6 +61,16 @@ if(ui.theoryBtn) {
 }
 document.getElementById('close-theory')?.addEventListener('click', () => {
     document.getElementById('theory-modal').style.display = 'none';
+});
+
+// Developer Modal Logic
+if(ui.devBtn) {
+    ui.devBtn.addEventListener('click', () => {
+        document.getElementById('dev-modal').style.display = 'flex';
+    });
+}
+document.getElementById('close-dev')?.addEventListener('click', () => {
+    document.getElementById('dev-modal').style.display = 'none';
 });
 
 // Teleports
@@ -143,7 +154,7 @@ function animate(time) {
 
     // Status Logic & Visuals
     const statusEl = ui.status;
-    const overlay = document.getElementById('alert-overlay'); // Get dynamically in case it wasn't ready
+    const overlay = document.getElementById('alert-overlay'); 
     
     if (r < Rs) {
         // INSIDE THE BLACK HOLE
@@ -152,19 +163,23 @@ function animate(time) {
         if(overlay) overlay.innerText = "SINGULARITY REACHED - PHYSICS BREAKDOWN";
         if(overlay) overlay.style.opacity = 1;
         
-        // Singularity Visuals: Invert/Chaos
-        scene.background = new THREE.Color(0xffffff); // Flash white or invert
-        blackHole.meshGroup.visible = false; // Hide normal BH
-        // Maybe show wireframe or nothing
+        scene.background = new THREE.Color(0xffffff); 
+        blackHole.meshGroup.visible = false; 
     } else {
-        scene.background = null; // Use starfield/shader
+        scene.background = null; 
         blackHole.meshGroup.visible = true;
         
-        if (tidal > 0.05) {
+        // Warning just before crossing
+        if (r < Rs * 1.2 && r > Rs) {
+             if(overlay) overlay.innerText = "WARNING: APPROACHING EVENT HORIZON";
+             if(overlay) overlay.style.opacity = (Math.sin(time * 15) + 1) * 0.5; // Fast blink
+             statusEl.innerText = "CRITICAL PROXIMITY";
+             statusEl.style.color = "#ff0000";
+        } else if (tidal > 0.05) {
             statusEl.innerText = "CRITICAL: SPAGHETTIFICATION";
             statusEl.style.color = "#ff4400";
             if(overlay) overlay.innerText = "WARNING: EXTREME TIDAL FORCES";
-            if(overlay) overlay.style.opacity = (Math.sin(time * 10) + 1) * 0.5; // Blink
+            if(overlay) overlay.style.opacity = (Math.sin(time * 10) + 1) * 0.5; 
         } else if (gravity > 2.0) {
             statusEl.innerText = "High Gravity";
             statusEl.style.color = "#ffff00";

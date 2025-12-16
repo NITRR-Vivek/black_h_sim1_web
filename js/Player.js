@@ -35,76 +35,62 @@ export class Player {
         
         // Sci-Fi Spaceship
         const hullMat = new THREE.MeshStandardMaterial({ 
-            color: 0x888888, // Pure Grey
-            roughness: 0.3, 
-            metalness: 0.8 
+            color: 0xaaaaaa, // Lighter Grey
+            roughness: 0.4, 
+            metalness: 0.7 
         });
         const darkMat = new THREE.MeshStandardMaterial({ 
-            color: 0x222222, 
-            roughness: 0.7 
+            color: 0x333333, 
+            roughness: 0.8 
         });
-        const glowMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
 
-        // Fuselage (Cone + Cylinder)
-        const noseGeo = new THREE.ConeGeometry(0.5, 2.0, 8);
-        const nose = new THREE.Mesh(noseGeo, hullMat);
-        nose.rotation.x = -Math.PI / 2;
-        nose.position.z = -1.0;
-        this.meshGroup.add(nose);
-
-        const bodyGeo = new THREE.CylinderGeometry(0.5, 0.7, 2.0, 8);
+        // 1. Main Body (Cylinder + Nose)
+        const bodyGeo = new THREE.CylinderGeometry(0.6, 0.8, 3.0, 8);
         const body = new THREE.Mesh(bodyGeo, hullMat);
         body.rotation.x = -Math.PI / 2;
-        body.position.z = 1.0;
         this.meshGroup.add(body);
         
-        // Cockpit
-        const cockpitGeo = new THREE.BoxGeometry(0.6, 0.4, 1.0);
+        const noseGeo = new THREE.ConeGeometry(0.6, 1.5, 8);
+        const nose = new THREE.Mesh(noseGeo, hullMat);
+        nose.rotation.x = -Math.PI / 2;
+        nose.position.z = -2.25;
+        this.meshGroup.add(nose);
+
+        // 2. Cockpit (Glass dome)
+        const cockpitGeo = new THREE.BoxGeometry(0.5, 0.3, 1.2);
         const cockpit = new THREE.Mesh(cockpitGeo, new THREE.MeshStandardMaterial({
-            color: 0x111111, roughness: 0.1, metalness: 0.9
+            color: 0x00aaff, roughness: 0.1, metalness: 0.9, emissive: 0x002244
         }));
-        cockpit.position.set(0, 0.4, 0.5);
+        cockpit.position.set(0, 0.65, -0.5);
         this.meshGroup.add(cockpit);
 
-        // Wings
-        const wingGeo = new THREE.BufferGeometry();
-        const wingVertices = new Float32Array([
-            0, 0, 0,   2.5, 0, 1.5,   0, 0, 2.0, // Left Wing
-            0, 0, 0,   -2.5, 0, 1.5,  0, 0, 2.0  // Right Wing
-        ]);
-        wingGeo.setAttribute('position', new THREE.BufferAttribute(wingVertices, 3));
-        const wings = new THREE.Mesh(wingGeo, hullMat);
-        wings.position.set(0, 0, 0.5);
-        this.meshGroup.add(wings);
+        // 3. Boosters (Large Engines on sides)
+        const boosterGeo = new THREE.CylinderGeometry(0.4, 0.5, 2.0, 12);
+        const boosterL = new THREE.Mesh(boosterGeo, hullMat);
+        boosterL.rotation.x = -Math.PI / 2;
+        boosterL.position.set(-1.2, 0, 0.5);
+        this.meshGroup.add(boosterL);
 
-        // Double Engines
-        const engineGeo = new THREE.CylinderGeometry(0.3, 0.2, 0.5, 12);
-        
-        const engineL = new THREE.Mesh(engineGeo, darkMat);
-        engineL.rotation.x = -Math.PI / 2;
-        engineL.position.set(-0.6, 0, 2.25);
-        this.meshGroup.add(engineL);
+        const boosterR = new THREE.Mesh(boosterGeo, hullMat);
+        boosterR.rotation.x = -Math.PI / 2;
+        boosterR.position.set(1.2, 0, 0.5);
+        this.meshGroup.add(boosterR);
 
-        const engineR = new THREE.Mesh(engineGeo, darkMat);
-        engineR.rotation.x = -Math.PI / 2;
-        engineR.position.set(0.6, 0, 2.25);
-        this.meshGroup.add(engineR);
-
-        // Solar Wings (Panels)
-        const panelGeo = new THREE.BoxGeometry(2.0, 0.05, 0.8);
+        // 4. Solar Wings (Attached to Boosters)
+        const panelGeo = new THREE.BoxGeometry(2.5, 0.05, 1.0);
         const panelMat = new THREE.MeshStandardMaterial({ 
-            color: 0x111144, 
-            roughness: 0.2, 
-            metalness: 0.6,
-            emissive: 0x000022
+            color: 0x111133, 
+            roughness: 0.3, 
+            metalness: 0.5,
+            emissive: 0x000011
         });
         
         const panelL = new THREE.Mesh(panelGeo, panelMat);
-        panelL.position.set(-2.0, 0, 0.5); // Closer to fuselage
+        panelL.position.set(-2.8, 0, 0.5); 
         this.meshGroup.add(panelL);
 
         const panelR = new THREE.Mesh(panelGeo, panelMat);
-        panelR.position.set(2.0, 0, 0.5); // Closer to fuselage
+        panelR.position.set(2.8, 0, 0.5); 
         this.meshGroup.add(panelR);
 
 
