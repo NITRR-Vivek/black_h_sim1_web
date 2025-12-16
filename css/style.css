@@ -107,3 +107,92 @@ button:hover {
 #status-val {
     color: #0f0;
 }
+
+/* Info Button */
+#info-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #4db8ff;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 2px solid white;
+    cursor: pointer;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px #4db8ff;
+}
+#info-btn:hover {
+    background: #0088ff;
+    transform: scale(1.1);
+}
+
+/* Modal */
+#info-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    display: none; /* Default hidden */
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #001122, #002244);
+    border: 2px solid #4db8ff;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 600px;
+    color: white;
+    box-shadow: 0 0 30px rgba(77, 184, 255, 0.3);
+    text-align: center;
+}
+
+.modal-content h2 {
+    color: #ffaa00;
+    border-bottom: 2px solid #ffaa00;
+}
+
+.modal-content ul {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.modal-content li {
+    margin-bottom: 8px;
+}
+
+#close-modal {
+    background: #00cc66;
+    width: auto;
+    padding: 10px 30px;
+    font-size: 1.1rem;
+}
+
+/* Alert Overlay */
+#alert-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: bold;
+    color: red;
+    text-shadow: 0 0 10px black;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+    text-align: center;
+    width: 100%;
+}
